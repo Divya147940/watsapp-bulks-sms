@@ -1,8 +1,7 @@
 import axios from 'axios';
 import useAuthStore from '../store/useAuthStore';
 
-// Assuming backend runs on localhost:8000 by default (FastAPI default)
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const apiClient = axios.create({
   baseURL: API_URL,
