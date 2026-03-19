@@ -2,9 +2,10 @@ from datetime import datetime, timedelta
 from typing import Any, Union
 from jose import jwt
 from passlib.context import CryptContext
+from cryptography.fernet import Fernet
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
@@ -21,3 +22,20 @@ def create_access_token(subject: Union[str, Any], expires_delta: timedelta = Non
     to_encode = {"exp": expire, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
+
+# Fernet Encryption for sensitive configuration
+def encrypt_token(token: str) -> str:
+    if not token or not settings.ENCRYPTION_KEY:
+        return token
+    f = Fernet(settings.ENCRYPTION_KEY.encode())
+    return f.encrypt(token.encode()).decode()
+
+def decrypt_token(encrypted_token: str) -> str:
+    if not encrypted_token or not settings.ENCRYPTION_KEY:
+        return encrypted_token
+    try:
+        f = Fernet(settings.ENCRYPTION_KEY.encode())
+        return f.decrypt(encrypted_token.encode()).decode()
+    except Exception:
+        # Fallback for unencrypted tokens during transition
+        return encrypted_token

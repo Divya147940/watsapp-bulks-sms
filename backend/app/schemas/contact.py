@@ -3,8 +3,8 @@ from typing import Optional, List, Dict
 from datetime import datetime
 
 class ContactBase(BaseModel):
-    name: str
-    phone_number: str
+    name: str = Field(..., min_length=1, max_length=100)
+    phone_number: str = Field(..., pattern=r"^\+?[1-9]\d{1,14}$")
     tags: Optional[List[str]] = []
     metadata: Optional[Dict[str, str]] = {}
 

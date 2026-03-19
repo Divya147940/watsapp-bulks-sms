@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 7 days
     
+    # Security
+    ENCRYPTION_KEY: str = ""
+    CORS_ORIGINS: list[str] = ["*"] # Default to all, but allow override
+    
     # Meta WhatsApp API
     WHATSAPP_TOKEN: str = ""
     WHATSAPP_PHONE_NUMBER_ID: str = ""

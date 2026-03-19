@@ -1,9 +1,10 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
 
 class UserBase(BaseModel):
     email: EmailStr
+    mobile_number: Optional[str] = Field(None, pattern=r"^\+?[1-9]\d{1,14}$")
     is_active: bool = True
 
 class UserCreate(UserBase):

@@ -7,6 +7,9 @@ from datetime import datetime
 async def get_user_by_email(email: str):
     return await db.users.find_one({"email": email})
 
+async def get_user_by_mobile(mobile_number: str):
+    return await db.users.find_one({"mobile_number": mobile_number})
+
 async def create_user(user: UserCreate):
     user_data = user.model_dump()
     user_data["hashed_password"] = get_password_hash(user_data.pop("password"))
