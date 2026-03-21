@@ -16,16 +16,26 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SupportModal from '../components/SupportModal';
+import StepContentModal from '../components/StepContentModal';
 
 const SetupGuide = () => {
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [assignedExpert, setAssignedExpert] = useState(null);
+  const [isContentModalOpen, setIsContentModalOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(null);
+  const [activeTab, setActiveTab] = useState('video');
   const [steps, setSteps] = useState([
-    { id: 1, title: 'Create Facebook Business Account', completed: false, description: 'Start by setting up your business presence on Meta.' },
-    { id: 2, title: 'Verify Business', completed: false, description: 'Complete the verification process to unlock full API capabilities.' },
-    { id: 3, title: 'Apply for WhatsApp API', completed: false, description: 'Request access to the WhatsApp Business Platform.' },
-    { id: 4, title: 'Configure API Credentials', completed: false, description: 'Set up your access tokens and phone number IDs.' },
-    { id: 5, title: 'Connect Number', completed: false, description: 'Finalize the connection to start sending messages.' },
+    { id: 0, title: 'Personal Facebook Account', completed: false, description: 'Ensure you have a primary Facebook profile.', link: 'https://www.facebook.com' },
+    { id: 1, title: 'Enable Two-Factor (2FA)', completed: false, description: 'Mandatory for business verification and security.', link: 'https://accountscenter.facebook.com/password_and_security' },
+    { id: 2, title: 'Create Business Account', completed: false, description: 'Set up your Meta Business Suite presence.', link: 'https://business.facebook.com/overview' },
+    { id: 3, title: 'Add WhatsApp Account', completed: false, description: 'Link a WhatsApp account to your business.', link: 'https://business.facebook.com/settings/whatsapp-business-accounts' },
+    { id: 4, title: 'Verify Phone Number', completed: false, description: 'Register your phone number with Meta.', link: 'https://business.facebook.com/settings/whatsapp-business-accounts' },
+    { id: 5, title: 'Get 24-Hour Token', completed: false, description: 'Quick setup with a temporary test token.', link: 'https://developers.facebook.com/apps' },
+    { id: 6, title: 'Add Payment Method', completed: false, description: 'Necessary for sending bulk messages.', link: 'https://business.facebook.com/billing_hub' },
+    { id: 7, title: 'Start Verification', completed: false, description: 'Verify your business to unlock higher limits.', link: 'https://business.facebook.com/settings/security-center' },
+    { id: 8, title: 'Create Templates', completed: false, description: 'Get your message content approved by Meta.', link: 'https://business.facebook.com/wa/manage/templates' },
+    { id: 9, title: 'Generate Permanent Token', completed: false, description: 'Create a System User for a non-expiring token.', link: 'https://business.facebook.com/settings/system-users' },
+    { id: 10, title: 'Finalize Connection', completed: false, description: 'Connect everything to start sending messages.', link: '/credentials' },
   ]);
 
   const navigate = useNavigate();
@@ -36,6 +46,12 @@ const SetupGuide = () => {
     setSteps(steps.map(step => 
       step.id === id ? { ...step, completed: !step.completed } : step
     ));
+  };
+
+  const openHelp = (step, tab) => {
+    setActiveStep(step);
+    setActiveTab(tab);
+    setIsContentModalOpen(true);
   };
 
   const handleSelectExpert = (type) => {
@@ -181,22 +197,44 @@ const SetupGuide = () => {
                     </p>
 
                     <div className="flex flex-wrap gap-3">
-                      <button className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider bg-white border border-gray-100 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
+                      <button 
+                        onClick={() => openHelp(step, 'video')}
+                        className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider bg-white border border-gray-100 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors shadow-sm"
+                      >
                         <PlayCircle size={16} className="text-whatsapp-dark" /> Video tutorial
                       </button>
-                      <button className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider bg-white border border-gray-100 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
+                      <button 
+                        onClick={() => openHelp(step, 'screenshots')}
+                        className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider bg-white border border-gray-100 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors shadow-sm"
+                      >
                         <ImageIcon size={16} className="text-blue-500" /> Screenshots
                       </button>
-                      <button className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider bg-white border border-gray-100 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
+                      <button 
+                        onClick={() => openHelp(step, 'instructions')}
+                        className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider bg-white border border-gray-100 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors shadow-sm"
+                      >
                         <FileText size={16} className="text-orange-500" /> Instructions
                       </button>
+                      <a 
+                        href={step.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider bg-blue-50 border border-blue-100 px-3 py-2 rounded-xl text-blue-600 hover:bg-blue-100 transition-colors shadow-sm"
+                      >
+                        <ExternalLink size={16} className="text-blue-500" /> Direct Link
+                      </a>
                     </div>
                   </div>
 
                   <div className="hidden md:flex flex-col gap-2">
-                    <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors border border-transparent hover:border-gray-200">
+                    <a 
+                      href={step.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors border border-transparent hover:border-gray-200"
+                    >
                       <ExternalLink size={18} />
-                    </button>
+                    </a>
                   </div>
                 </div>
               </motion.div>
@@ -209,6 +247,13 @@ const SetupGuide = () => {
         isOpen={isSupportOpen} 
         onClose={() => setIsSupportOpen(false)} 
         onSelectExpert={handleSelectExpert}
+      />
+
+      <StepContentModal 
+        isOpen={isContentModalOpen}
+        onClose={() => setIsContentModalOpen(false)}
+        step={activeStep}
+        initialTab={activeTab}
       />
     </div>
   );

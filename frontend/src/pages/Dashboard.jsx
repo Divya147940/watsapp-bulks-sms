@@ -115,7 +115,10 @@ const Dashboard = () => {
                     <span className="text-xs font-bold text-gray-400">Used by 2.4k+ users</span>
                   </div>
 
-                  <button className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-black transition-all group-hover:gap-4">
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); navigate(feature.path); }}
+                    className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-black transition-all group-hover:gap-4"
+                  >
                     {feature.btnText} <ArrowRight size={18} />
                   </button>
                 </div>
